@@ -44,11 +44,8 @@ body {
 }
 
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+@media (max-width: 990px) {
+  .App-header {
+    font-size: 1em;
   }
 }
