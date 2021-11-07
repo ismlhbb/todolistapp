@@ -54,6 +54,7 @@ function Todo(props) {
     const todolist = useStyles();
     const [open, setOpen] = useState(false);
     const [input, setInput] = useState('');
+    const [category, setCategory] = useState('')
 
     const handleOpen = () => {
         setOpen(true);
@@ -62,7 +63,8 @@ function Todo(props) {
     const updateTodo = () => {
         // update the todo with the new input data
         db.collection('todos').doc(props.todo.id).set({
-            todo: input
+            todo: input,
+            category: category
         }, { merge: true })
         setOpen(false);
     }
@@ -81,6 +83,10 @@ function Todo(props) {
                                 <InputLabel>{props.todo.todo}</InputLabel>
                                 <Input value={input} onChange={event => setInput(event.target.value)} />
                             </FormControl>
+                            <FormControl>
+                                <InputLabel>{props.todo.category}</InputLabel>
+                                <Input value={category} onChange={event => setCategory(event.target.value)} />
+                            </FormControl>
                             <Button size="small" variant="contained" color="primary" onClick={updateTodo}>Update</Button>
                         </form>
                     </div>
@@ -92,7 +98,7 @@ function Todo(props) {
                     <ListItemText primary={props.todo.todo} secondary={
                         <React.Fragment>
                             <Typography component="span" variant="body2" className={todolist.inline} color="textPrimary">
-                                Daily Routine
+                                {props.todo.category}
                             </Typography>
                         </React.Fragment>
                     } />

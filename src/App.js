@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
 function App() {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState('');
+  const [category, setCategory] = useState('');
   const todocreate = useStyles();
 
   // when the app loads, need to listen to the database 
@@ -25,7 +26,7 @@ function App() {
   useEffect(() => {
     //this will fires when the app.js loads
     db.collection('todos').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
-      setTodos(snapshot.docs.map(doc => ({ id: doc.id, todo: doc.data().todo })))
+      setTodos(snapshot.docs.map(doc => ({ id: doc.id, todo: doc.data().todo, category: doc.data().category })))
     })
   }, []);
 
@@ -34,26 +35,32 @@ function App() {
     event.preventDefault(); // don't refresh the page when submitting
     db.collection('todos').add({
       todo: input,
+      category: category,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }) // store data to database
-    setTodos([...todos, input]); // add the input value to the todos array
+    setTodos([...todos, input, category]); // add the input value to the todos array
     setInput(''); // clear up the input field after submitting
+    setCategory(''); // clear up the category field after submitting
   }
 
   return (
     <div className="App">
       <div className="App-header">
-        <h1>🔥 Simple To-Do List App 🔥</h1>
-        <h4>by <a href="https://github.com/ismlhbb">@ismlhbb</a></h4>
+        <h1>To-Do List App ✅</h1>
+        <h4>by <a href="https://github.com/ismlhbb" target='_blank' rel='noopener noreferrer'>@ismlhbb</a></h4>
       </div>
 
       <div className="App-todocreate">
         <form className={todocreate.todocreate}>
           <FormControl>
-            <InputLabel>Create a new TO-DO</InputLabel>
+            <InputLabel>Create a new To-Do</InputLabel>
             <Input value={input} onChange={event => setInput(event.target.value)} />
           </FormControl>
-          <Button disabled={!input} variant="contained" color="primary" type="submit" onClick={addTodo}>
+          <FormControl>
+            <InputLabel>Category</InputLabel>
+            <Input value={category} onChange={event => setCategory(event.target.value)} />
+          </FormControl>
+          <Button disabled={!input || !category} variant="contained" color="primary" type="submit" onClick={addTodo}>
             Add To-Do
           </Button>
         </form>
